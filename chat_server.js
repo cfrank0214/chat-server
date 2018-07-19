@@ -10,19 +10,29 @@ function handleRequest(request, response) {
     console.log("Request recieved!");
     console.log(request.url)
     let fileName;
-    if (request.url === '/') {
-        fileName = 'index.html'
+    let data
+    let type = 'plain';
 
-    } else {
-        fileName = request.url.slice(1)
+    try {
+        if (request.url === '/') {
+            fileName = 'index.html'
+
+        } else {
+            fileName = request.url.slice(1)
+        }
+        data = fs.readFileSync(fileName)
+        type = fileName.split('.')[1];
+        response.statusCode = 200;
+    } catch (error) {
+        console.log(error);
+        data = "Error: " + error.toString();
+        response.statusCode = 404;
     }
 
-    let data = fs.readFileSync(fileName)
-    let type = fileName.split('.')[1];
     let contentType = `text/${type}; charset=utf-8`
 
     response.setHeader('Content-Type', contentType)
-    response.statusCode = 200;
+
     response.write(data)
     response.end();
 }
