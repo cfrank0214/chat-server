@@ -1,6 +1,7 @@
 // setup requirements
 const http = require('http');
 const fs = require('fs');
+const mime = require('mime-types');
 const port = process.env.PORT || 5000;
 
 http.createServer(handleRequest).listen(port);
@@ -11,7 +12,7 @@ function handleRequest(request, response) {
     console.log(request.url)
     let fileName;
     let data
-    let type = 'plain';
+    let type = 'text/plain';
 
     try {
         if (request.url === '/') {
@@ -21,7 +22,7 @@ function handleRequest(request, response) {
             fileName = request.url.slice(1)
         }
         data = fs.readFileSync(fileName)
-        type = fileName.split('.')[1];
+        type = mime.lookup(fileName)
         response.statusCode = 200;
     } catch (error) {
         console.log(error);
@@ -29,7 +30,7 @@ function handleRequest(request, response) {
         response.statusCode = 404;
     }
 
-    let contentType = `text/${type}; charset=utf-8`
+    let contentType = `${type}; charset=utf-8`
 
     response.setHeader('Content-Type', contentType)
 
