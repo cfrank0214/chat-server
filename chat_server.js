@@ -8,12 +8,20 @@ console.log('Listening on port:' + port);
 
 function handleRequest(request, response) {
     console.log("Request recieved!");
-    let fileName = 'index.html';
-    let data = fs.readFileSync(fileName)
+    console.log(request.url)
+    let fileName;
+    if (request.url === '/') {
+        fileName = 'index.html'
 
-    response.setHeader('Content-Type',
-        'text/html; charset=utf-8'
-    )
+    } else {
+        fileName = request.url.slice(1)
+    }
+
+    let data = fs.readFileSync(fileName)
+    let type = fileName.split('.')[1];
+    let contentType = `text/${type}; charset=utf-8`
+
+    response.setHeader('Content-Type', contentType)
     response.statusCode = 200;
     response.write(data)
     response.end();
