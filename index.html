@@ -16,7 +16,42 @@
             <input type='text' name='body'>
             <input type='submit'>
         </form>
+        <button id='getAllNow' action='chat' method='get'>Get Messages</button>
     </div>
-</body>
+    <div id='chat-log'>
 
+    </div>
+    <script>
+       let chatForm =  document.getElementById('chat-form')
+       let chatLog = document.getElementById('chat-log')
+       let getMessages = document.getElementById('getAllNow')
+    
+       chatForm.addEventListener('submit', (event) => {
+        let inputElement = chatForm.querySelector('input[name=body]')
+        let message = inputElement.value
+        let params = new URLSearchParams();
+        params.append('body', message)
+
+        fetch('/chat', {
+            method: 'POST',
+            body: params
+        })
+        .then((response) => response.json())
+        .then((messages) => {
+            chatLog.innerHTML = messages.map((message) => message.body).join('<br>')
+        })
+        event.preventDefault();
+       })
+
+       getMessages.addEventListener('click', (event) => {
+        fetch('/chat', {
+            method: 'GET'
+        })
+        .then((response) => response.json())
+        .then((messages) => {
+            chatLog.innerHTML = messages.map((message) => message.body).join('<br>')
+        })
+       })
+    </script>
+</body>
 </html>
