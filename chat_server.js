@@ -19,7 +19,8 @@ function handleRequest(request, response) {
 		} else if (path === '/chat') {
 			console.log(request.method);
 			if (request.method === 'GET') {
-				console.log('Parsing the GET');
+                console.log('Parsing the GET');
+                let since = assistant.url.decodeURI
 				let data = JSON.stringify(messages);
 				let type = mime.lookup('json');
 				assistant.finishResponse(type, data);

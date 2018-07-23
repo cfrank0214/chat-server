@@ -1,57 +1,131 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-    <link rel="stylesheet" href="style.css" type="text/css">
+  <title>Chat App</title>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  <!-- css -->
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700|Open+Sans:400,300,700,800" rel="stylesheet" media="screen">
+
+  <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+  <link href="css/style.css" rel="stylesheet" media="screen">
+  <link href="color/default.css" rel="stylesheet" media="screen">
+  <link rel="stylesheet" href="style.css" type="text/css">
+
 </head>
 
 <body>
-    <h1>Chat</h1>
-    <div id="form-input">
-        <form id='chat-form' action='chat' method='post'>
-            <input type='text' name='body'>
-            <input type='submit'>
-        </form>
-        <button id='getAllNow' action='chat' method='get'>Get Messages</button>
-    </div>
-    <div id='chat-log'>
 
+  <!-- Navigation -->
+  <nav class="navbar navbar-default" role="navigation">
+    <div class="container">
+      <div class="navbar-header">
+        
+
+        <!-- Logo text or image -->
+        <a class="navbar-brand" href="index.html">Chat App</a>
+
+      </div>
+      <div class="navigation collapse navbar-collapse navbar-ex1-collapse">
+        <ul class="nav navbar-nav">
+          
+        </ul>
+      </div>
     </div>
-    <script>
-       let chatForm =  document.getElementById('chat-form')
-       let chatLog = document.getElementById('chat-log')
-       let getMessages = document.getElementById('getAllNow')
+  </nav>
+
+  <!-- intro area -->
+  <div id="intro">
+    <div class="intro-text">
+      <div class="container">
+        <div class="col-md-12">
+          <div id="form-input">
+            <form id='chat-form' action='chat' method='post'>
+                <input type='text' name='body'>
+                <input type='submit'>
+            </form>
+            <button id='getAllNow' action='chat' method='get'>Get Messages</button>
+        </div>
+        <div id='chat-log'>
     
-       chatForm.addEventListener('submit', (event) => {
-        let inputElement = chatForm.querySelector('input[name=body]')
-        let message = inputElement.value
-        let params = new URLSearchParams();
-        params.append('body', message)
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-        fetch('/chat', {
-            method: 'POST',
-            body: params
-        })
-        .then((response) => response.json())
-        .then((messages) => {
-            chatLog.innerHTML = messages.map((message) => message.body).join('<br>')
-        })
-        event.preventDefault();
-       })
+  
 
-       getMessages.addEventListener('click', (event) => {
-        fetch('/chat', {
-            method: 'GET'
-        })
-        .then((response) => response.json())
-        .then((messages) => {
-            chatLog.innerHTML = messages.map((message) => message.body).join('<br>')
-        })
+  <!-- Bottom widget -->
+  <section id="bottom-widget" class="home-section bg-white">
+    <div class="container">
+     
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          
+
+  <!-- js -->
+  <script src="js/jquery.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <script src="js/wow.min.js"></script>
+  <script src="js/mb.bgndGallery.js"></script>
+  <script src="js/mb.bgndGallery.effects.js"></script>
+  <script src="js/jquery.simple-text-rotator.min.js"></script>
+  <script src="js/jquery.scrollTo.min.js"></script>
+  <script src="js/jquery.nav.js"></script>
+  <script src="js/modernizr.custom.js"></script>
+  <script src="js/grid.js"></script>
+  <script src="js/stellar.js"></script>
+  <!-- Contact Form JavaScript File -->
+  <script src="contactform/contactform.js"></script>
+
+  <!-- Template Custom Javascript File -->
+  <script src="js/custom.js"></script>
+  <script>
+      let chatForm =  document.getElementById('chat-form')
+      let chatLog = document.getElementById('chat-log')
+      let getMessages = document.getElementById('getAllNow')
+      let since 
+      chatForm.addEventListener('submit', (event) => {
+       let inputElement = chatForm.querySelector('input[name=body]')
+       let message = inputElement.value
+       let params = new URLSearchParams();
+       params.append('body', message)
+
+       fetch('/chat', {
+           method: 'POST',
+           body: params
        })
-    </script>
+       .then((response) => response.json())
+       .then((messages) => {
+           chatLog.innerHTML = messages.map((message) => message.body).join('<br>')
+       })
+       event.preventDefault();
+      })
+      getMessages.addEventListener('click', (event) => {
+       fetch('/chat', {
+           method: 'GET'
+       })
+       .then((response) => response.json())
+       .then((messages) => {
+           chatLog.innerHTML = messages.map((message) => message.body).join('<br>')
+       let timeArray = []
+       for (let i = 0; i < messages.length; i++) {
+           timeArray.push(messages[i].when)
+       }
+       timeArray.sort()
+       since = timeArray[timeArray.length - 1]
+       console.log(since)
+       })
+      })
+   </script>
+
 </body>
 </html>
