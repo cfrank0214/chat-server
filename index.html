@@ -7,29 +7,22 @@
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <!-- css -->
   <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700|Open+Sans:400,300,700,800" rel="stylesheet" media="screen">
-
   <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
   <link href="css/style.css" rel="stylesheet" media="screen">
   <link href="color/default.css" rel="stylesheet" media="screen">
   <link rel="stylesheet" href="style.css" type="text/css">
-
 </head>
 
 <body>
-
   <!-- Navigation -->
   <nav class="navbar navbar-default" role="navigation">
     <div class="container">
       <div class="navbar-header">
-        
-
         <!-- Logo text or image -->
         <a class="navbar-brand" href="index.html">Chat App</a>
-
       </div>
       <div class="navigation collapse navbar-collapse navbar-ex1-collapse">
         <ul class="nav navbar-nav">
-          
         </ul>
       </div>
     </div>
@@ -48,19 +41,15 @@
             <button id='getAllNow' action='chat' method='get'>Get Messages</button>
         </div>
         <div id='chat-log'>
-    
         </div>
         </div>
       </div>
     </div>
   </div>
 
-  
-
   <!-- Bottom widget -->
   <section id="bottom-widget" class="home-section bg-white">
     <div class="container">
-     
     </div>
   </section>
 
@@ -68,8 +57,7 @@
   <footer>
     <div class="container">
       <div class="row">
-        <div class="col-md-12">
-          
+        <div class="col-md-12">    
 
   <!-- js -->
   <script src="js/jquery.js"></script>
@@ -85,20 +73,19 @@
   <script src="js/stellar.js"></script>
   <!-- Contact Form JavaScript File -->
   <script src="contactform/contactform.js"></script>
-
   <!-- Template Custom Javascript File -->
   <script src="js/custom.js"></script>
   <script>
       let chatForm =  document.getElementById('chat-form')
       let chatLog = document.getElementById('chat-log')
       let getMessages = document.getElementById('getAllNow')
-      let since 
+      let since
+
       chatForm.addEventListener('submit', (event) => {
        let inputElement = chatForm.querySelector('input[name=body]')
        let message = inputElement.value
        let params = new URLSearchParams();
        params.append('body', message)
-
        fetch('/chat', {
            method: 'POST',
            body: params
@@ -109,6 +96,7 @@
        })
        event.preventDefault();
       })
+
       getMessages.addEventListener('click', (event) => {
        fetch('/chat', {
            method: 'GET'
@@ -126,6 +114,5 @@
        })
       })
    </script>
-
 </body>
 </html>
