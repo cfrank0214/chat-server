@@ -1,6 +1,7 @@
 const http = require('http');
 const mime = require('mime-types');
-const Assistant = require('./assistant');
+const Assistant = require('./lib/assistant');
+const House = require('./lib/house')
 const port = process.env.PORT || 5000;
 let messages = [];
 
@@ -20,7 +21,6 @@ function handleRequest(request, response) {
 			console.log(request.method);
 			if (request.method === 'GET') {
                 console.log('Parsing the GET');
-                let since = assistant.url.decodeURI
 				let data = JSON.stringify(messages);
 				let type = mime.lookup('json');
 				assistant.finishResponse(type, data);
