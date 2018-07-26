@@ -107,6 +107,13 @@
        })
        .then((response) => response.json())
        .then((messages) => {
+        console.log(messages)
+        for(let message of messages) {
+          localStorage.setItem('username', message.username)
+          localStorage.setItem('body', message.body)
+          localStorage.setItem('when', message.when)
+        }
+        
          messagesArray = messages
            chatLog.innerHTML = messages.map((message) => message.body).join('<br>')
        })
@@ -114,13 +121,14 @@
       })
 
       getMessages.addEventListener('click', (event) => {
-        since = messagesArray.map((messageDate) => messageDate.when ).sort()
-        since = since[since.length-1]
+        since = localStorage.getItem('when')
+        // since = messagesArray.map((messageDate) => messageDate.when ).sort()
+        // since = since[since.length-1]
+        console.log(since)
         if (!since) {
           since = '2010-07-15T19:02:00.787Z'
         }
       params.append('since', since);
-      console.log(params)
        fetch(`/chat/?since=${since}`, {
            method: 'GET',
        })
