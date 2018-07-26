@@ -88,6 +88,9 @@ button.navbar-toggle {
 	border-color: #999;
 	color: #999;
 }
+#chat-log {
+    color: white;
+}
 
 
 /* ================================

@@ -1,48 +1,78 @@
 const http = require('http');
-const mime = require('mime-types');
 const Assistant = require('./lib/assistant');
-const House = require('./lib/house')
+const House = require('./lib/house');
 const port = process.env.PORT || 5000;
-let messages = [];
+let house = new House();
 
 http.createServer(handleRequest).listen(port);
 console.log('Listening on port:' + port);
 
 function handleRequest(request, response) {
-	console.log('request.url = ' + request.url);
+	let url = require('url').parse(request.url);
+	let path = url.pathname;
 
+	console.log('Finding ' + path);
 	let assistant = new Assistant(request, response);
-	let path = assistant.path;
 
-	try {
-		if (path === '/') {
-			assistant.sendFile('index.html');
-		} else if (path === '/chat') {
-			console.log(request.method);
-			if (request.method === 'GET') {
-                console.log('Parsing the GET');
-				let data = JSON.stringify(messages);
-				let type = mime.lookup('json');
-				assistant.finishResponse(type, data);
-			} else {
-				console.log('Parsing the POST');
-				assistant.parsePostParams((params) => {
-					let message = {
-						name: 'Anonymous',
-						body: params.body,
-						when: new Date().toISOString()
-					};
-					messages.push(message);
-					let data = JSON.stringify(messages);
-					let type = mime.lookup('json');
-					assistant.finishResponse(type, data);
-				});
-			}
-		} else {
-			let fileName = request.url.slice(1);
-			assistant.sendFile(fileName);
-		}
-	} catch (error) {
-		assistant.sendError(404, 'Error: ' + error.toString());
+	// "routing" happens here (not very complicated)
+	let pathParams = parsePath(path);
+	if (isChatAction(pathParams)) {
+		handleChatAction(request, assistant);
+	} else if (assistant.isRootPathRequested()) {
+		assistant.sendFile('./public/index.html');
+	} else {
+		assistant.handleFileRequest();
 	}
+}
+
+function isChatAction(pathParams) {
+	return pathParams.action === 'chat';
+}
+
+function handleChatAction(request, handler) {
+	if (request.method === 'GET') {
+		
+		if (handler.url.query) {
+			let params = handler.decodeParams(handler.url.query)
+			since = params.since
+			sinceAsDate = new Date(since)
+			sendChatMessages(handler, sinceAsDate);
+		}
+		
+	} else if (request.method === 'POST') {
+		handler.parsePostParams((params) => {
+			let messageOptions = {
+				username: 'Anonymous',
+				body: params.body,
+				when: new Date(Date.now()).toISOString()
+			};
+			house.sendMessageToRoom('general', messageOptions);
+			let oneHour = (1000 * 60 * 60);
+			let since = new Date(Date.now() - oneHour);
+			sendChatMessages(handler, since);
+		});
+	} else {
+		handler.sendError(405, "Method '" + request.method + "' Not Allowed");
+	}
+}
+
+function sendChatMessages(handler, since) {
+	console.log(since)
+	let messages = house.roomWithId('general').messagesSince(since);
+	let data = JSON.stringify(messages);
+	let contentType = 'text/json';
+	handler.finishResponse(contentType, data);
+}
+
+function parsePath(path) {
+	let format;
+	if (path.endsWith('.json')) {
+		path = path.substring(0, path.length - 5);
+		format = 'json';
+	}
+	let pathParts = path.slice(1).split('/');
+	let action = pathParts.shift();
+	let id = pathParts.shift();
+	let pathParams = { action: action, id: id, format: format };
+	return pathParams;
 }
