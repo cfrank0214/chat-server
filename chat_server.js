@@ -17,7 +17,9 @@ function handleRequest(request, response) {
 	// "routing" happens here (not very complicated)
 	let pathParams = parsePath(path);
 	if (isChatAction(pathParams)) {
-		handleChatAction(request, assistant);
+		handleChatAction(request, assistant, pathParams);
+	} else if (isRoomAction(pathParams)) {
+		handleRoomAction(request, assistant, pathParams)
 	} else if (assistant.isRootPathRequested()) {
 		assistant.sendFile('./public/index.html');
 	} else {
@@ -29,16 +31,18 @@ function isChatAction(pathParams) {
 	return pathParams.action === 'chat';
 }
 
-function handleChatAction(request, handler) {
+function isRoomAction(pathParams) {
+	return pathParams.action === 'room';
+}
+
+function handleChatAction(request, handler, pathParams) {
 	if (request.method === 'GET') {
-		
 		if (handler.url.query) {
-			let params = handler.decodeParams(handler.url.query)
-			since = params.since
-			sinceAsDate = new Date(since)
+			let params = handler.decodeParams(handler.url.query);
+			since = params.since;
+			sinceAsDate = new Date(since);
 			sendChatMessages(handler, sinceAsDate);
 		}
-		
 	} else if (request.method === 'POST') {
 		handler.parsePostParams((params) => {
 			let messageOptions = {
@@ -46,19 +50,37 @@ function handleChatAction(request, handler) {
 				body: params.body,
 				when: new Date(Date.now()).toISOString()
 			};
-			house.sendMessageToRoom('general', messageOptions);
-			let oneHour = (1000 * 60 * 60);
+			house.sendMessageToRoom(pathParams.id, messageOptions);
+			let oneHour = 1000 * 60 * 60;
 			let since = new Date(Date.now() - oneHour);
-			sendChatMessages(handler, since);
+			sendChatMessages(handler, pathParams.id, since);
 		});
 	} else {
 		handler.sendError(405, "Method '" + request.method + "' Not Allowed");
 	}
 }
 
-function sendChatMessages(handler, since) {
-	console.log(since)
-	let messages = house.roomWithId('general').messagesSince(since);
+function handleRoomAction(request, handler, pathParams) {
+	if (request.method === 'GET') {
+			sendRoomMessages(handler);
+		
+	} else if (request.method === 'POST') {
+		console.log('You are trying to post a room')
+		
+	} else {
+		handler.sendError(405, "Method '" + request.method + "' Not Allowed");
+	}
+}
+
+function sendRoomMessages(handler) {
+	let rooms = {'room': 'general'}
+	let data = JSON.stringify(rooms);
+	let contentType = 'text/json';
+	handler.finishResponse(contentType, data);
+}
+
+function sendChatMessages(handler, roomId, since) {
+	let messages = house.roomWithId(roomId).messagesSince(since);
 	let data = JSON.stringify(messages);
 	let contentType = 'text/json';
 	handler.finishResponse(contentType, data);
