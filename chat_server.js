@@ -60,21 +60,28 @@ function handleChatAction(request, handler, pathParams) {
 	}
 }
 
-function handleRoomAction(request, handler, pathParams) {
+function handleRoomAction(request, handler) {
 	if (request.method === 'GET') {
-			sendRoomMessages(handler);
+			sendRoomList(handler);
 		
 	} else if (request.method === 'POST') {
-		console.log('You are trying to post a room')
+		let params = handler.decodeParams(handler.url.query);
+		
+		house.roomWithId(params.room)
 		
 	} else {
 		handler.sendError(405, "Method '" + request.method + "' Not Allowed");
 	}
 }
 
-function sendRoomMessages(handler) {
-	let rooms = {'room': 'general'}
+function sendRoomList(handler) {
+	let rooms = house.allRoomIds()
+	if(rooms.length === 0) {
+		house.roomWithId('general')
+		rooms = ['general']
+	}
 	let data = JSON.stringify(rooms);
+	console.log('Your list of rooms on server is' + data)
 	let contentType = 'text/json';
 	handler.finishResponse(contentType, data);
 }

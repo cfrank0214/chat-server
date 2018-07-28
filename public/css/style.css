@@ -103,6 +103,13 @@ button.navbar-toggle {
 #chat-log {
 	color: white;
 }
+label {
+	color: white;
+}
+
+.hide-on-load {
+	display: none;
+}
 
 
 /* ================================
