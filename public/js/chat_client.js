@@ -1,6 +1,9 @@
 let chatForm = document.getElementById('chat-form');
 let roomForm = document.getElementById('room-form');
 let chatLog = document.getElementById('chat-log');
+
+let roomlist = document.getElementById('dropdown-menu');
+
 let getMessages = document.getElementById('getAllNow');
 let getRooms = document.getElementById('getAllRooms');
 let params = new URLSearchParams();
@@ -59,22 +62,11 @@ getRooms.addEventListener('click', (event) => {
 	})
 		.then((response) => response.json())
 		.then((messages) => {
-			messages.forEach(function(rooms) {
-				roomlist.innerHTML = rooms;
-			});
 			console.log(`Got list of rooms on drop-down click = ${messages}`);
+			roomlist.innerHTML = "";
+			messages.forEach(function(room) {
+				roomlist.innerHTML += room + "'<br>\'";
+				
+			});
 		});
 });
-
-function loadRoomDropDown() {
-	fetch(`/room`, {
-		method: 'GET'
-	})
-		.then((response) => response.json())
-		.then((messages) => {
-			console.log(`Got list of rooms on page load = ${messages}`);
-			messages.forEach(function(rooms) {
-				roomlist.innerHTML = rooms;
-			});
-		});
-}
