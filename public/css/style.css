@@ -111,6 +111,15 @@ label {
 	display: none;
 }
 
+#dropdown {
+	display: flex;
+	justify-content: center;
+}
+
+#dropdown-menu {
+	padding-left: 5px;
+}
+
 
 /* ================================
 margin, padding

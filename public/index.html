@@ -33,42 +33,41 @@
   <div id="intro">
     <div class="intro-text">
       <div class="container">
-        <div class="col-md-6">
+        <div class="col-md-6" id='dropdown'>
             <div class="dropdown">
-                <button id='getAllRooms'class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Choose a room
+                <button id='getAllRooms' class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Choose a room
                 <span class="caret"></span></button>
-                <ul class="dropdown-menu" id='dropdown-menu'>
-                  
-                </ul>
+                <div class="dropdown-menu" id='dropdown-menu'>
+                    
+                </div>
            </div>
           </div>
-             <div class="col-md-6">
-                <div id="form-input-room">
+          <div class="col-md-6">
+            <div id="form-input-room">
               <form id='room-form'>
-                  <div class="form-group" action='room' method='post'>
-                    <label for="exampleInputRoomName">Enter New Room Name</label>
+                  <div class="form-group" >
+                    <label >Enter New Room Name</label>
                     <input type="text" class="form-control" name='body' placeholder="Room Name">
                   </div>
         
-                  <button id='sendRoomNow' action='room' method='post' class="btn btn-primary">Create Room</button>
-                </form>
-          </div>
+                  <button id='sendRoomNow' class="btn btn-primary">Create Room</button>
+              </form>
+            </div>
           </div>
           <div class="col-md-6 hide-on-load">
-          <div id="form-input">
+            <div id="form-input">
             <form id='chat-form' action='chat' method='post'>
                 <input type='text' class="form-control" >
                 <input type='submit' class="btn btn-primary">
             </form>
-            <button id='getAllNow' class="btn btn-primary" action='chat' method='get'>Get Messages</button>
-        </div>
+            <button id='getAllNow' class="btn btn-primary" >Get Messages</button>
+          </div>
         <div id='chat-log'>
         </div>
         </div>
       </div>
       </div>
     </div>
-  </div>
 
   <!-- Bottom widget -->
   <section id="bottom-widget" class="home-section bg-white">

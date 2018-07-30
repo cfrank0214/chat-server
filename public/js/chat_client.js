@@ -61,12 +61,22 @@ getRooms.addEventListener('click', (event) => {
 		method: 'GET'
 	})
 		.then((response) => response.json())
-		.then((messages) => {
-			console.log(`Got list of rooms on drop-down click = ${messages}`);
-			roomlist.innerHTML = "";
-			messages.forEach(function(room) {
-				roomlist.innerHTML += room + "'<br>\'";
+		.then((rooms) => {
+			roomlist.innerHTML = ''
+			
+			if (rooms.length > 1) {
+				let roomArray = []
+				for (let room of rooms) {
+					room = `<a class="dropdown-item" onclick='submitRoom("${room}")'><div>` + room + "</div></a>"
+					roomArray.push(room)
+				}
+				roomlist.innerHTML += roomArray.join('')
+			} else {
+				console.log(`Got list of rooms on drop-down click = ${rooms}`);
+				rooms[0] = `<a class="dropdown-item" onclick='submitRoom("${rooms[0]}")'><div>` + rooms[0] + "</div></a>"
+				roomlist.innerHTML += rooms.join('')
+			}
 				
-			});
+			
 		});
 });
