@@ -11,7 +11,6 @@ function handleRequest(request, response) {
 	let url = require('url').parse(request.url);
 	let path = url.pathname;
 
-	console.log('Finding ' + path);
 	let assistant = new Assistant(request, response);
 
 	// "routing" happens here (not very complicated)
@@ -36,12 +35,18 @@ function isRoomAction(pathParams) {
 }
 
 function handleChatAction(request, handler, pathParams) {
+	
 	if (request.method === 'GET') {
 		if (handler.url.query) {
 			let params = handler.decodeParams(handler.url.query);
 			since = params.since;
+			if(!since){
+				since = 0
+			}
+			let room = pathParams.id
 			sinceAsDate = new Date(since);
-			sendChatMessages(handler, sinceAsDate);
+			console.log(`Chat GET where params = ${room}; since = ${sinceAsDate}`)
+			sendChatMessages(handler, room, sinceAsDate);
 		}
 	} else if (request.method === 'POST') {
 		handler.parsePostParams((params) => {
@@ -50,10 +55,12 @@ function handleChatAction(request, handler, pathParams) {
 				body: params.body,
 				when: new Date(Date.now()).toISOString()
 			};
-			house.sendMessageToRoom(pathParams.id, messageOptions);
+			let room = pathParams.id
+			house.sendMessageToRoom(room, messageOptions);
 			let oneHour = 1000 * 60 * 60;
 			let since = new Date(Date.now() - oneHour);
-			sendChatMessages(handler, pathParams.id, since);
+			console.log(`Chat Post where params = ${room}; since = ${since}`)
+			sendChatMessages(handler, room, since);
 		});
 	} else {
 		handler.sendError(405, "Method '" + request.method + "' Not Allowed");
@@ -81,7 +88,6 @@ function sendRoomList(handler) {
 		rooms = ['general']
 	}
 	let data = JSON.stringify(rooms);
-	console.log('Your list of rooms on server is' + data)
 	let contentType = 'text/json';
 	handler.finishResponse(contentType, data);
 }
@@ -89,11 +95,13 @@ function sendRoomList(handler) {
 function sendChatMessages(handler, roomId, since) {
 	let messages = house.roomWithId(roomId).messagesSince(since);
 	let data = JSON.stringify(messages);
+	console.log(data)
 	let contentType = 'text/json';
 	handler.finishResponse(contentType, data);
 }
 
 function parsePath(path) {
+	console.log(path)
 	let format;
 	if (path.endsWith('.json')) {
 		path = path.substring(0, path.length - 5);

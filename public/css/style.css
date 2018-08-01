@@ -107,7 +107,7 @@ label {
 	color: white;
 }
 
-.hide-on-load {
+#hide-on-load {
 	display: none;
 }
 
