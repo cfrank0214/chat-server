@@ -93,11 +93,12 @@ function sendRoomList(handler) {
 }
 
 function sendChatMessages(handler, roomId, since) {
-	let messages = house.roomWithId(roomId).messagesSince(since);
-	let data = JSON.stringify(messages);
-	console.log(data)
-	let contentType = 'text/json';
-	handler.finishResponse(contentType, data);
+	house.roomWithId(roomId).messagesSince(since, (messages) => {
+    console.log("in messagesSince: " + messages)
+    let data = JSON.stringify(messages);
+    let contentType = 'text/json';
+    handler.finishResponse(contentType, data);  
+  });
 }
 
 function parsePath(path) {
