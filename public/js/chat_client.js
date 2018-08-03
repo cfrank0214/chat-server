@@ -6,12 +6,13 @@ let roomlist = document.getElementById('dropdown-menu');
 
 let getMessages = document.getElementById('getAllNow');
 let getRooms = document.getElementById('getAllRooms');
+let params = new URLSearchParams();
 
 chatForm.addEventListener('submit', (event) => {
 	let chatMessage = chatForm.querySelector('input[name=body]');
 	let message = chatMessage.value;
 	let room = localStorage.getItem('room');
-	let params = new URLSearchParams();
+	
 	params.append('body', message);
 	
 	fetch(`/chat/${room}`, {
