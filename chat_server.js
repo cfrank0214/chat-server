@@ -2,6 +2,8 @@ const http = require('http');
 const Assistant = require('./lib/assistant');
 const House = require('./lib/house');
 const port = process.env.PORT || 5000;
+
+
 let house = new House();
 
 http.createServer(handleRequest).listen(port);
@@ -94,8 +96,8 @@ function sendRoomList(handler) {
 
 function sendChatMessages(handler, roomId, since) {
 	house.roomWithId(roomId).messagesSince(since, (messages) => {
-    console.log("in messagesSince: " + messages)
     let data = JSON.stringify(messages);
+    console.log("in messagesSince: " + data)
     let contentType = 'text/json';
     handler.finishResponse(contentType, data);  
   });
